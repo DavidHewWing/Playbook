@@ -1,10 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'antd/dist/antd.css';
+import Toolbar from './components/toolbar/Toolbar'
 
 function App() {
   return (
     <div className="App">
+      <Toolbar></Toolbar>
       <header className="App-header">
           The Ultimate Frisbee Playbook is coming soon.
       </header>
