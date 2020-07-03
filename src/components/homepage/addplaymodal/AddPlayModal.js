@@ -6,15 +6,25 @@ const AddPlayModal = (props) => {
   const { visible, toggle, addPlay } = props;
   const [playName, setPlayName] = useState('');
 
+  /**
+   * Triggers when you type in the input field
+   * @param {Event} e - Event information from the incoming change event.
+   */
   const handleChange = (e) => {
     setPlayName(e.target.value);
   };
 
+  /**
+   * When you click OK/press enter.
+   */
   const handleOk = () => {
     addPlay(playName);
     toggle();
   };
 
+  /**
+   * When you click cancel / X
+   */
   const handleCancel = () => {
     toggle();
   };

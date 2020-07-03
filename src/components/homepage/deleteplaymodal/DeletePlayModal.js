@@ -8,11 +8,17 @@ const DeletePlayModal = (props) => {
   } = props;
   const name = currentPlayName.split('_').join(' ');
 
+  /**
+   * When you click OK
+   */
   const handleOk = () => {
     deletePlay(currentPlayName);
     toggle();
   };
 
+  /**
+   * When you click cancel, or X.
+   */
   const handleCancel = () => {
     toggle();
   };

@@ -15,6 +15,10 @@ const SideMenu = () => {
   const [addPlayModalOpen, toggleAddPlay] = useModal();
   const [deletePlayModalOpen, toggleDeletePlay] = useModal();
 
+  /**
+   * This method adds a play to the sidemenu.
+   * @param {string} playName - Name of the play you would like to add.
+   */
   const addPlay = (playName) => {
     const names = plays.map((play) => play.name);
     if (names.includes(playName)) {
@@ -26,6 +30,10 @@ const SideMenu = () => {
     }
   };
 
+  /**
+   * Removes the play from the side menu.
+   * @param {string} playName - Name of the play you want to delete.
+   */
   const deletePlay = (playName) => {
     const nameToDelete = playName.replace(/_/g, ' ');
     const playsRemoved = plays.filter((el) => el.name !== nameToDelete);
@@ -33,6 +41,10 @@ const SideMenu = () => {
     message.success(`"${nameToDelete}" has been removed.`);
   };
 
+  /**
+   * Handles click from clicking a side-menu item.
+   * @param {Event} e - incoming information from click event.
+   */
   const handleClick = (e) => {
     const { key } = e;
     if (key === 'add-play') {
@@ -44,6 +56,10 @@ const SideMenu = () => {
     }
   };
 
+  /**
+   * Handles click from clicking the title.
+   * @param {Event} e - incoming event information from the click
+   */
   const handleTitleClick = (e) => {
     setCurrentPlayName(e.key);
     setCurrentKey(`${e.key}_edit`);
