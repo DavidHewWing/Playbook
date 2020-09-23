@@ -3,10 +3,9 @@ import {
   HomeOutlined, SettingOutlined, ContactsOutlined, MediumOutlined, LinkedinOutlined, GithubOutlined,
 } from '@ant-design/icons';
 import {
-  BrowserRouter as Router, Switch, Route, Link,
+  BrowserRouter as Router, Link,
 } from 'react-router-dom';
 import React, { useState } from 'react';
-import HomePage from '../homepage/HomePage';
 import './styles.scss';
 
 const { SubMenu } = Menu;
@@ -20,7 +19,7 @@ const Toolbar = () => {
 
   return (
     <Router>
-      <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+      <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal" style={{"width": "100%"}}>
         <SubMenu style={{ float: 'right' }} icon={<ContactsOutlined />} title="About Me">
           <Menu.Item key="linkedin" icon={<LinkedinOutlined />}>LinkedIn</Menu.Item>
           <Menu.Item key="github" icon={<GithubOutlined />}>Github</Menu.Item>
@@ -35,11 +34,6 @@ const Toolbar = () => {
           </Link>
         </Menu.Item>
       </Menu>
-      <Switch>
-        <Route exact path="/">
-          <HomePage />
-        </Route>
-      </Switch>
     </Router>
   );
 };
