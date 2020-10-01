@@ -8,12 +8,19 @@ import useDimensions from '../../../hooks/window-utils/DimensionsHook';
 const Whiteboard = () => {
   const [ref, { height, width }] = useDimensions(true);
   const [grid, updateGrid] = useState([]);
-  const [cells, updateCells] = useState([]);
+  const [cells, updateCells] = useState([[]]);
   const [currCell, updateCurrCell] = useState({});
   const [addPlayerModalOpen, toggleAddPlayerModal] = useModal();
 
   const numRows = 15;
   const numCols = 20;
+
+
+  useEffect(() => {
+    if (!height && !width) setUpCells();
+    console.log('cells', cells);
+    generateGrid();
+  }, [cells, height, width]);
 
   const setUpCells = () => {
     let tempCells = [];
@@ -29,8 +36,8 @@ const Whiteboard = () => {
   }
 
   const addPlayer = (player) => {
-    console.log('player:', player);
-    console.log(grid);
+    cells[currCell.row][currCell.col].type = player;
+    updateCells([...cells]);
   }
 
   const handleCellClick = (row, col) => {
@@ -39,6 +46,19 @@ const Whiteboard = () => {
       col,
     })
     toggleAddPlayerModal();
+  }
+
+  const renderCellType = (row, col) => {
+    const { type } = cells[row][col];
+    if (type === 'player') {
+      return <p> player </p>;
+    } else if (type === 'opponent') {
+      return <p> opponent </p>;
+    } else if (type === 'player with disc') {
+      return <p> player w/ disc </p>;
+    } else {
+      return;
+    }
   }
 
   const generateCells = (row) => {
@@ -52,16 +72,19 @@ const Whiteboard = () => {
       if (fourth) {
         div = (
           <div key={[row, i]} style={{width: cellWidth, borderRight: '2px solid black', borderBottom: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+            {renderCellType(row, i)}
           </div>
         )
       } else if (backFour) {
         div = (
           <div key={[row, i]} style={{width: cellWidth, borderLeft: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+            {renderCellType(row, i)}
           </div>
         )
       } else {
         div = (
           <div key={[row, i]} style={{width: cellWidth, borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+            {renderCellType(row, i)}
           </div>
         )
       }
@@ -84,10 +107,6 @@ const Whiteboard = () => {
     }
     updateGrid(tempGrid);
   };
-
-  useEffect(() => {
-    generateGrid();
-  }, [height, width]);
 
   return (
     <div ref={ref} className="whiteboard-container">
