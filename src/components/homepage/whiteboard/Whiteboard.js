@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'antd';
+import useModal from '../../../hooks/homepage/UseModalHook';
+import AddPlayerModal from '../addplayermodal/AddPlayerModal';
 import './styles.scss';
 
 import useDimensions from '../../../hooks/window-utils/DimensionsHook';
@@ -8,21 +9,36 @@ const Whiteboard = () => {
   const [ref, { height, width }] = useDimensions(true);
   const [grid, updateGrid] = useState([]);
   const [cells, updateCells] = useState([]);
+  const [currCell, updateCurrCell] = useState({});
+  const [addPlayerModalOpen, toggleAddPlayerModal] = useModal();
 
   const numRows = 15;
   const numCols = 20;
 
   const setUpCells = () => {
-    let grid = [];
+    let tempCells = [];
     for (let i = 0; i < numRows; i++) {
-      grid[i] = [];
+      tempCells[i] = [];
       for (let j = 0; j < numCols; j++) {
-        grid[i][j] = {
-          type: 'empty'
+        tempCells[i][j] = {
+          type: 'none'
         }
       }
     }
-    updateCells(grid);
+    updateCells(tempCells);
+  }
+
+  const addPlayer = (player) => {
+    console.log('player:', player);
+    console.log(grid);
+  }
+
+  const handleCellClick = (row, col) => {
+    updateCurrCell({
+      row,
+      col,
+    })
+    toggleAddPlayerModal();
   }
 
   const generateCells = (row) => {
@@ -35,18 +51,17 @@ const Whiteboard = () => {
       let div = null;
       if (fourth) {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderRight: '2px solid black', borderBottom: '1px solid rgb(211,211,211)'}}>
-
+          <div key={[row, i]} style={{width: cellWidth, borderRight: '2px solid black', borderBottom: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
           </div>
         )
       } else if (backFour) {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderLeft: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}}>
+          <div key={[row, i]} style={{width: cellWidth, borderLeft: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
           </div>
         )
       } else {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}}>
+          <div key={[row, i]} style={{width: cellWidth, borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
           </div>
         )
       }
@@ -76,6 +91,7 @@ const Whiteboard = () => {
 
   return (
     <div ref={ref} className="whiteboard-container">
+      <AddPlayerModal visible={addPlayerModalOpen} toggle={toggleAddPlayerModal} addPlayer={addPlayer}/>
       {grid}
     </div>
   );
