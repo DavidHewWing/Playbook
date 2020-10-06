@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import useModal from '../../../hooks/homepage/UseModalHook';
-import AddPlayerModal from '../addplayermodal/AddPlayerModal';
 import './styles.scss';
 
+
+import useModal from '../../../hooks/homepage/UseModalHook';
+import AddPlayerModal from '../addplayermodal/AddPlayerModal';
 import useDimensions from '../../../hooks/window-utils/DimensionsHook';
 
 const Whiteboard = () => {
@@ -15,10 +16,8 @@ const Whiteboard = () => {
   const numRows = 15;
   const numCols = 20;
 
-
   useEffect(() => {
     if (!height && !width) setUpCells();
-    console.log('cells', cells);
     generateGrid();
   }, [cells, height, width]);
 
@@ -28,7 +27,8 @@ const Whiteboard = () => {
       tempCells[i] = [];
       for (let j = 0; j < numCols; j++) {
         tempCells[i][j] = {
-          type: 'none'
+          type: 'none',
+          hasDisc: false
         }
       }
     }
@@ -36,7 +36,9 @@ const Whiteboard = () => {
   }
 
   const addPlayer = (player) => {
-    cells[currCell.row][currCell.col].type = player;
+    cells[currCell.row][currCell.col].type = player.type;
+    cells[currCell.row][currCell.col].hasDisc = player.hasDisc;
+    console.log(cells[currCell.row][currCell.col]);
     updateCells([...cells]);
   }
 
@@ -50,14 +52,22 @@ const Whiteboard = () => {
 
   const renderCellType = (row, col) => {
     const { type } = cells[row][col];
-    if (type === 'player') {
-      return <p> player </p>;
+    const cellHeight = height / numRows;
+    const cellWidth = width / numCols;
+
+    let dimension = (cellHeight <= cellWidth) ? cellHeight : cellWidth;
+    dimension = dimension - 8;
+
+    if (type === 'handler') {
+      return <span style={{width: dimension, height: dimension}} className="dot">H</span>;
+    } else if (type === 'cutter') {
+      return <span style={{width: dimension, height: dimension}} className="dot">C</span>;
     } else if (type === 'opponent') {
-      return <p> opponent </p>;
-    } else if (type === 'player with disc') {
-      return <p> player w/ disc </p>;
+      return <span style={{width: dimension, height: dimension, backgroundColor: 'gray'}} className="dot"></span>
+    } else if (type === 'disc') {
+      return <p> disc </p>;
     } else {
-      return;
+      return 
     }
   }
 
@@ -71,19 +81,28 @@ const Whiteboard = () => {
       let div = null;
       if (fourth) {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderRight: '2px solid black', borderBottom: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+          <div key={[row, i]} 
+            style={{width: cellWidth, borderRight: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', position: 'relative'}}
+            onClick={() => handleCellClick(row, i)}
+          >
             {renderCellType(row, i)}
           </div>
         )
       } else if (backFour) {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderLeft: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+          <div key={[row, i]}
+            style={{width: cellWidth, borderLeft: '2px solid black', borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)', position: 'relative'}}
+            onClick={() => handleCellClick(row, i)}
+          >
             {renderCellType(row, i)}
           </div>
         )
       } else {
         div = (
-          <div key={[row, i]} style={{width: cellWidth, borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)'}} onClick={() => handleCellClick(row, i)}>
+          <div key={[row, i]}
+            style={{width: cellWidth, borderBottom: '1px solid rgb(211,211,211)', borderRight: '1px solid rgb(211,211,211)', position: 'relative'}}
+            onClick={() => handleCellClick(row, i)}
+          >
             {renderCellType(row, i)}
           </div>
         )
@@ -110,8 +129,8 @@ const Whiteboard = () => {
 
   return (
     <div ref={ref} className="whiteboard-container">
-      <AddPlayerModal visible={addPlayerModalOpen} toggle={toggleAddPlayerModal} addPlayer={addPlayer}/>
       {grid}
+      <AddPlayerModal visible={addPlayerModalOpen} toggle={toggleAddPlayerModal} addPlayer={addPlayer} />
     </div>
   );
 };

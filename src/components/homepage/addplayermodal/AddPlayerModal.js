@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Switch} from 'antd';
 
 const AddPlayerModal = (props) => {
   const { visible, toggle, addPlayer } = props;
   const [player, updatePlayer] = useState('');
+  const [hasDisc, updateDisc] = useState(false);
 
-  const handleButton = (e) => {
-    const playerType = e.target.innerHTML.toLowerCase();
+  const handleButton = (playerType) => {
+    if (playerType === 'opponent' || playerType === 'none') updateDisc(false);
     updatePlayer(playerType);
   }
 
   const handleOk = () => {
-    addPlayer(player)
+    addPlayer({
+      type: player,
+      hasDisc: hasDisc
+    })
     toggle();
   };
 
@@ -22,6 +26,10 @@ const AddPlayerModal = (props) => {
     toggle();
   };
 
+  const onSwitch = () => {
+    updateDisc(!hasDisc);
+  }
+
   return (
     <Modal
       title="Add Player"
@@ -30,9 +38,12 @@ const AddPlayerModal = (props) => {
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      <Button onClick={(e) => handleButton(e)}>Player</Button>
-      <Button onClick={(e) => handleButton(e)}>Opponent</Button>
-      <Button onClick={(e) => handleButton(e)}>Player with Disc</Button>
+      <h3>Position</h3>
+      <Button style={{'marginRight': 8}} onClick={(e) => handleButton('cutter')}>Cutter</Button>
+      <Button style={{'marginRight': 8}} onClick={(e) => handleButton('handler')}>Handler</Button>
+      <Button style={{'marginRight': 8}} onClick={(e) => handleButton('opponent')}>Opponent</Button>
+      <Button style={{'marginRight': 8}} onClick={(e) => handleButton('none')}>Remove</Button>
+      { (player === 'handler' || player === 'cutter') ? <Switch onChange={(e) => onSwitch()} checkedChildren="Disc" unCheckedChildren="No Disc"></Switch> : ''}
     </Modal>
   )
 }
