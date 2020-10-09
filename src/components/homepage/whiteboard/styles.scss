@@ -13,3 +13,12 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.button-group {
+  height: 32px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
