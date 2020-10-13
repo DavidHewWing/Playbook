@@ -45,14 +45,26 @@ const Whiteboard = () => {
     updatePhases([tempCells]);
   }
 
+  const generateNewPhase = () => {
+    let tempCells = [];
+    for (let i = 0; i < numRows; i++) {
+      tempCells[i] = [];
+      for (let j = 0; j < numCols; j++) {
+        tempCells[i][j] = {
+          type: 'none',
+          hasDisc: false
+        }
+      }
+    }
+    return tempCells;
+  }
+
   /**
    * Sets up the phases, this code inside here must be replace with an API call later.
    */
   const setUpCells2 = () => {
     updatePhases([...playPhases]);
     renderPhaseButtons();
-    console.log('phases', phases);
-    console.log('playPhases', playPhases);
   }
 
   /**
@@ -71,8 +83,6 @@ const Whiteboard = () => {
       updateCutterCount(cutterCount + 1);
     }
     updatePhases([...phases]);
-    console.log(currStep);
-    console.log(phases);
   }
 
   /**
@@ -136,6 +146,16 @@ const Whiteboard = () => {
     const arr = value.split('-');
     const phaseNumber = parseInt(arr[1]);
     updateCurrStep(phaseNumber - 1);
+  }
+
+  const handleNewPhaseButtonClick = () => {
+    if (phases.length >= 6) {
+      message.error('You are only allowed 6 phases.');
+      return;
+    }
+    phases.push(phases[phases.length - 1]);
+    updatePhases([...phases]);
+    updateCurrStep(phases.length - 1);
   }
 
   /**
@@ -207,7 +227,6 @@ const Whiteboard = () => {
    */
   const handleStepChange = (change) => {
     const num = currStep + change;
-    console.log('num', num);
     if (num < 0) {
       message.error('This is the first phase in the play.');
       return;
@@ -225,11 +244,13 @@ const Whiteboard = () => {
       {grid}
       <AddPlayerModal visible={addPlayerModalOpen} toggle={toggleAddPlayerModal} addPlayer={addPlayer} />
       <div className="button-group">
+      <Button onClick={() => {console.log('This button clicked')}}>Delete Phase</Button>
         <Button onClick={() => {handleStepChange(-1)}}>Prev Phase</Button>
         <Radio.Group value={`phase-${currStep + 1}`}onChange={(e) => {handlePhaseButtonClick(e)}} style={{'marginLeft': 8, 'marginRight': 8}}>
           {renderPhaseButtons()}
         </Radio.Group>
         <Button onClick={() => {handleStepChange(1)}}>Next Phase</Button>
+        <Button onClick={() => {handleNewPhaseButtonClick()}}>New Phase</Button>
       </div>
     </div>
   );
